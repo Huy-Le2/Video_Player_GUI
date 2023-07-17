@@ -11,7 +11,7 @@ import openpyxl
 
 root = Tk()
 
-global time_start, time_end, test_output, user_profile, test_output, times_undo
+global time_start, time_end, test_output, user_profile, times_undo
 global current_value, username
 numvideos = 10
 vid_list = random.sample(range(4,7),3)
@@ -88,6 +88,7 @@ def load_next_set(order):
         time_end = time.time()
         test_output.append(time_end - time_start)
 
+        print("Current profile: ", user_profile)
         coin_flip = random.randint(0,1)
         pait1_vid.stop()
         pait2_vid.stop()
@@ -108,13 +109,13 @@ def load_next_set(order):
         if(len(user_profile) < cur_pait*6):
             user_profile = np.append(user_profile, test_output)
         else:
-            user_profile = np.array(np.split(user_profile, cur_pait-1))
-            user_profile[cur_pait-1,] = test_output
-        #user_profile = np.array(np.split(user_profile, cur_pait))
+            i = 0
+            for entry in test_output:
+                user_profile[i + (cur_pait-1)*6] = entry
+                i += 1
         if(no_vids):
-            user_profile = np.array(np.split(user_profile, cur_pait))
+            user_profile = np.split(user_profile, cur_pait)
             df = pd.DataFrame(user_profile)
-            print(user_profile, df)
             test_result = pd.ExcelWriter("Perceptual_results.xlsx")
             excel_header = ["User's name", "Paitient number","Time spent(s)", "Result", "Times Undo", "Video Swapped(1 is true)"]
             df.to_excel(test_result, header= excel_header, index= False, startrow=1)
@@ -135,6 +136,7 @@ def check_done_pressed(event, videoplayer, order):
         load_next_set(order)
 
 def play_set():
+    global time_start
     time_start = time.time()
     pait1_vid.play()
     pait2_vid.play()
@@ -184,6 +186,7 @@ def undoCB():
         pait2_vid.load(vid_name_before)
         print("New set loaded")
     times_undo += 1
+
 def get_current_value():
     return '{: .2f}'.format(current_value.get()) 
     
