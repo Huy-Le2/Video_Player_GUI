@@ -10,9 +10,6 @@ import openpyxl
 
 
 root = Tk()
-
-global time_start, time_end, test_output, user_profile, times_undo
-global current_value, username
 numvideos = 10
 vid_list = random.sample(range(4,7),3)
 current_value = tk.DoubleVar()
@@ -187,6 +184,28 @@ def undoCB():
         print("New set loaded")
     times_undo += 1
 
+def V1_pause_CB():
+    global pait1_vid, done_pressed
+    pait1_vid.pause()
+    done_pressed = 1
+    
+def V2_pause_CB():
+    global pait2_vid, done_pressed
+    pait2_vid.pause()
+    done_pressed = 1
+    
+def V1_play_CB():
+    global pait1_vid, done_pressed
+    if(pait1_vid.is_paused()):
+        pait1_vid.play()
+        done_pressed = 0
+    
+def V2_play_CB():
+    global pait2_vid, done_pressed
+    if(pait2_vid.is_paused()):
+        pait2_vid.play()
+        done_pressed = 0
+
 def get_current_value():
     return '{: .2f}'.format(current_value.get()) 
     
@@ -219,7 +238,13 @@ w2 = Scale(root,
            showvalue= 0)
 w2.pack(fill= 'both')
 
-Undo_button = Button(root, text= "Undo previous records", font={"Times New Roman", 18}, command= undoCB).pack(side= 'bottom',padx= 5, pady= 5)
+V1_play  = Button(root, text= "Play", font={"Times New Roman", 18}, command= V1_play_CB).pack(side= 'left', padx= 5, pady= 5)
+V2_play  = Button(root, text= "Play", font={"Times New Roman", 18}, command= V2_play_CB).pack(side= 'right', padx= 5, pady= 5)
+
+V1_pause  = Button(root, text= "Pause", font={"Times New Roman", 18}, command= V1_pause_CB).pack(side= 'left', padx= 5, pady= 5)
+V2_pause  = Button(root, text= "Pause", font={"Times New Roman", 18}, command= V2_pause_CB).pack(side= 'right', padx= 5, pady= 5)
+
+Undo_button = Button(root, text= "Redo previous records", font={"Times New Roman", 18}, command= undoCB).pack(side= 'bottom',padx= 5, pady= 5)
 Play_Button = Button(root, text= "Play new set", font={"Times New Roman", 18}, command= play_set).pack(side= 'bottom', padx= 5, pady= 5)
 Done_Button  = Button(root, text= "Done", font={"Times New Roman", 18}, command= on_click_done).pack(side= 'bottom', padx= 5, pady= 5)
 
